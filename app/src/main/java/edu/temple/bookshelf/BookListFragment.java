@@ -3,6 +3,7 @@ package edu.temple.bookshelf;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,18 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import edu.temple.bookshelf.dummy.DummyContent;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of Books.
  */
 public class BookListFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    private static final String BOOK_LIST = "booklist";
+    private BookList books;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -31,12 +31,10 @@ public class BookListFragment extends Fragment {
     public BookListFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static BookListFragment newInstance(int columnCount) {
+    public static BookListFragment newInstance(BookList books) {
         BookListFragment fragment = new BookListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putParcelable(BOOK_LIST, books);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,26 +44,26 @@ public class BookListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            books = getArguments().getParcelable(BOOK_LIST);
         }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+        ListView listView = (ListView) inflater.inflate(R.layout.fragment_book_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new BookshelfAdapter(DummyContent.ITEMS));
-        }
-        return view;
+        listView.setAdapter(new BookshelfAdapter(getContext(), books));
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            parentActivity.bookSelected(position);
+        });
+        return listView;
     }
 }

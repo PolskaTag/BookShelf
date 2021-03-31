@@ -2,62 +2,58 @@ package edu.temple.bookshelf;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import edu.temple.bookshelf.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
- * TODO: Replace the implementation with code for your data type.
- */
-public class BookshelfAdapter extends RecyclerView.Adapter<BookshelfAdapter.ViewHolder> {
+public class BookshelfAdapter extends BaseAdapter{
 
-    private final List<DummyItem> mValues;
+    Context context;
+    BookList books;
 
-    public BookshelfAdapter(List<DummyItem> items) {
-        mValues = items;
+    public BookshelfAdapter (Context context, BookList books){
+        this.context = context;
+        this.books = books;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_book_list, parent, false);
-        return new ViewHolder(view);
+    public int getCount() {
+        return books.size();
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+    public Object getItem(int position) {
+        return books.get(position);
     }
 
     @Override
-    public int getItemCount() {
-        return mValues.size();
+    public long getItemId(int position) {
+        return 0;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        TextView titleTextView;
+        TextView authorTextView;
 
-        public ViewHolder(View view) {
-            super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+        if(!(convertView instanceof LinearLayout)){
+            convertView = LayoutInflater.from(context).inflate(R.layout.bookshelf_adapter, parent, false);
         }
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
-        }
+        titleTextView = convertView.findViewById(R.id.titleTextView);
+        authorTextView = convertView.findViewById(R.id.authorTextView);
+
+        titleTextView.setText(((Book) getItem(position)).getTitle());
+        authorTextView.setText(((Book) getItem(position)).getAuthor());
+
+        return convertView;
     }
 }
