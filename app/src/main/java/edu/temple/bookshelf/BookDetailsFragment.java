@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,33 +16,20 @@ import android.view.ViewGroup;
  */
 public class BookDetailsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String BOOK = "book";
+    private Book book;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    TextView titleTextView;
+    TextView authorTextView;
 
     public BookDetailsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BookDetailsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BookDetailsFragment newInstance(String param1, String param2) {
+    public static BookDetailsFragment newInstance(Book book) {
         BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(BOOK, book);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,8 +38,7 @@ public class BookDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            book = getArguments().getParcelable(BOOK);
         }
     }
 
@@ -59,6 +46,18 @@ public class BookDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_book_details, container, false);
+
+        titleTextView = view.findViewById(R.id.titleTextView);
+        authorTextView = view.findViewById(R.id.authorTextView);
+
+        if(book != null){
+            showBook(book);
+        }
+        return view;
+    }
+    public void showBook(Book book){
+        titleTextView.setText(book.getTitle());
+        authorTextView.setText(book.getAuthor());
     }
 }
