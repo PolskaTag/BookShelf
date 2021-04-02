@@ -15,15 +15,15 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     BookDetailsFragment bookDetailsFragment;
     BookList myBooks = new BookList();
     Book selectedBook;
-    String[] titles = {
-            "12 Rules for Life", "The Adventures of Huckleberry Finn",
-            "Tom Sawyer Abroad", "Republic", "Meditations",
-            "Mistborn: Shadows of Self", "Why Fish Don't Exist"
-    };
-    String[] authors = {
-            "Jordan Peterson", "Mark Twain", "Mark Twain", "Plato",
-            "Socrates", "Brandon Sanderson", "Lulu Miller"
-    };
+//    String[] titles = {
+//            "12 Rules for Life", "The Adventures of Huckleberry Finn",
+//            "Tom Sawyer Abroad", "Republic", "Meditations",
+//            "Mistborn: Shadows of Self", "Why Fish Don't Exist"
+//    };
+//    String[] authors = {
+//            "Jordan Peterson", "Mark Twain", "Mark Twain", "Plato",
+//            "Socrates", "Brandon Sanderson", "Lulu Miller"
+//    };
 
     private final String SELECTED_BOOK = "selectedBook";
 
@@ -32,9 +32,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        for(int i = 0; i < titles.length; i++){
-            myBooks.add(new Book(titles[i], authors[i]));
-        }
+        // Test books
+//        for(int i = 0; i < titles.length; i++){
+//            myBooks.add(new Book(titles[i], authors[i]));
+//        }
 
         // Get selected book if not null
         if(savedInstanceState != null){

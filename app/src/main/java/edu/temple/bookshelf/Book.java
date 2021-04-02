@@ -6,6 +6,8 @@ import android.os.Parcelable;
 public class Book implements Parcelable {
     private String title;
     private String author;
+    private int id;
+    private String coverURL;
 
     // Default book
     public Book(){}
@@ -14,6 +16,13 @@ public class Book implements Parcelable {
     public Book(String title, String author){
         this.title = title;
         this.author = author;
+    }
+
+    public Book(int id, String title, String author, String coverURL){
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.coverURL = coverURL;
     }
 
     protected Book(Parcel in){
