@@ -52,6 +52,8 @@ public class Book implements Parcelable {
         return author;
     }
 
+    public String getCoverImage(){ return coverURL; }
+
     @Override
     public int describeContents(){return 0;}
 

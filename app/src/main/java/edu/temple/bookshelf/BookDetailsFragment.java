@@ -65,6 +65,13 @@ public class BookDetailsFragment extends Fragment {
     public void showBook(Book book){
         titleTextView.setText(book.getTitle());
         authorTextView.setText(book.getAuthor());
-        Picasso.get().load(R.drawable.ic_launcher_background).into(coverImageView);
+        Picasso.get()
+                .load(book.getCoverImage())
+                .placeholder(R.drawable.ic_launcher_background)
+                .resize(400,400)
+                .centerCrop()
+                .rotate(0)
+                .into(coverImageView);
+//        Picasso.get().load(R.drawable.ic_launcher_background).into(coverImageView);
     }
 }
