@@ -46,4 +46,6 @@ public class BookList implements Parcelable {
     public Book get(int pos){
         return books.get(pos);
     }
+
+    public int size(){ return books.size(); }
 }

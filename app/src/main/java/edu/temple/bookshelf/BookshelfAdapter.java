@@ -10,8 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import edu.temple.bookshelf.dummy.DummyContent.DummyItem;
-
 import java.util.List;
 
 public class BookshelfAdapter extends BaseAdapter{
