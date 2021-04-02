@@ -17,8 +17,6 @@ Fragments should be used to display the information. In additon, when the user i
 4) Fragments and their core functionality
 
 
-### Rubric:
-
 ### Examples:
 
 BookList      |  BookDetail
