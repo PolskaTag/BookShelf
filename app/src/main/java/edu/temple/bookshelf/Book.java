@@ -28,6 +28,8 @@ public class Book implements Parcelable {
     protected Book(Parcel in){
         title = in.readString();
         author = in.readString();
+        id = in.readInt();
+        coverURL = in.readString();
     }
 
     public static final Creator<Book> CREATOR = new Creator<Book>(){
@@ -57,5 +59,7 @@ public class Book implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(author);
+        dest.writeString(coverURL);
+        dest.writeInt(id);
     }
 }
