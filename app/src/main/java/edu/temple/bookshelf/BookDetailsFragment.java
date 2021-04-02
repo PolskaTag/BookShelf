@@ -7,7 +7,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +25,7 @@ public class BookDetailsFragment extends Fragment {
 
     TextView titleTextView;
     TextView authorTextView;
+    ImageView coverImageView;
 
     public BookDetailsFragment() {
         // Required empty public constructor
@@ -50,6 +55,7 @@ public class BookDetailsFragment extends Fragment {
 
         titleTextView = view.findViewById(R.id.titleTextView);
         authorTextView = view.findViewById(R.id.authorTextView);
+        coverImageView = view.findViewById(R.id.coverImageView);
 
         if(book != null){
             showBook(book);
@@ -59,5 +65,6 @@ public class BookDetailsFragment extends Fragment {
     public void showBook(Book book){
         titleTextView.setText(book.getTitle());
         authorTextView.setText(book.getAuthor());
+        Picasso.get().load(R.drawable.ic_launcher_background).into(coverImageView);
     }
 }
