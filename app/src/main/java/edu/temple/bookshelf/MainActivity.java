@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             bookDetailsFragment = BookDetailsFragment.newInstance(selectedBook);
         }
 
+        // If we have two containers, replace container 2 with the selected bookDetails
+        // Else we only have one container and we need to display the details while retaining info on the list
         if(twoPane){
             fragmentManager.beginTransaction().replace(R.id.container2, bookDetailsFragment).commit();
         } else if (selectedBook != null) {
@@ -81,5 +83,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putParcelable(SELECTED_BOOK, selectedBook);
+    }
+
+    // Fixes problem where selected book still showing after back button pressed
+    @Override
+    public void onBackPressed(){
+        selectedBook = null;
+        super.onBackPressed();
     }
 }
