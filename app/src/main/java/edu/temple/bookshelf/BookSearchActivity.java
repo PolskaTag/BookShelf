@@ -88,21 +88,23 @@ public class BookSearchActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONArray response) {
-                        try {
-                            Random random = new Random();
-                            jsonArray = response;
-                            JSONObject bookObject = response.getJSONObject(random.nextInt(response.length()));
-                            outputTextView.setText(bookObject.getString("title"));
-                            Picasso.get().load(Uri.parse(bookObject.getString("cover_url"))).into(imageView);
+                        if(response.length() > 0){
+                            try {
+                                Random random = new Random();
+                                jsonArray = response;
+                                JSONObject bookObject = response.getJSONObject(random.nextInt(response.length()));
+                                outputTextView.setText(bookObject.getString("title"));
+                                Picasso.get().load(Uri.parse(bookObject.getString("cover_url"))).into(imageView);
 
-                            // Put the array in a bundle and send it over to MainActivity
-                            Bundle bundle = new Bundle();
-                            bundle.putString("jsonArray", response.toString());
-                            sendIntent.putExtras(bundle);
+                                // Put the array in a bundle and send it over to MainActivity
+                                Bundle bundle = new Bundle();
+                                bundle.putString("jsonArray", response.toString());
+                                sendIntent.putExtras(bundle);
 
-                            startActivity(sendIntent);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                                startActivity(sendIntent);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                     }
