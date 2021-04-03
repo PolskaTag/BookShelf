@@ -4,7 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
 import android.os.Bundle;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -15,6 +20,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     BookDetailsFragment bookDetailsFragment;
     BookList myBooks = new BookList();
     Book selectedBook;
+    JSONArray bookArray;
+    JSONObject bookObject;
+
 //    String[] titles = {
 //            "12 Rules for Life", "The Adventures of Huckleberry Finn",
 //            "Tom Sawyer Abroad", "Republic", "Meditations",
@@ -32,6 +40,26 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Make a bundle and grab the data from Intent
+        Bundle bundle = getIntent().getExtras();
+        String bookArrayString = bundle.getString("jsonArray");
+        try {
+            JSONArray bookArray = new JSONArray(bookArrayString);
+
+            // For each Book in bookArray, make a book
+            for(int i = 0; i < bookArray.length(); i++){
+                bookObject = bookArray.getJSONObject(i);
+                myBooks.add(new Book(
+                        bookObject.getInt("id"),
+                        bookObject.getString("title"),
+                        bookObject.getString("author"),
+                        bookObject.getString("cover_url")
+                ));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         // Test books
 //        for(int i = 0; i < titles.length; i++){
 //            myBooks.add(new Book(titles[i], authors[i]));

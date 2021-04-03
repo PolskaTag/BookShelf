@@ -3,10 +3,12 @@ package edu.temple.bookshelf;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -41,6 +43,7 @@ public class BookSearchActivity extends AppCompatActivity {
     TextView outputTextView;
     ImageView imageView;
     RequestQueue requestQueue;
+    Intent sendIntent;
 
 //    Handler downloadHandler = new Handler(new Handler.Callback() {
 //        @Override
@@ -70,6 +73,8 @@ public class BookSearchActivity extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
+        sendIntent = new Intent(this, MainActivity.class);
+
         searchButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -84,7 +89,13 @@ public class BookSearchActivity extends AppCompatActivity {
                             JSONObject bookObject = response.getJSONObject(0);
                             outputTextView.setText(bookObject.getString("title"));
                             Picasso.get().load(Uri.parse(bookObject.getString("cover_url"))).into(imageView);
-                            Log.d("TAG", bookObject.toString());
+
+                            // Put the array in a bundle and send it over to MainActivity
+                            Bundle bundle = new Bundle();
+                            bundle.putString("jsonArray", response.toString());
+                            sendIntent.putExtras(bundle);
+
+                            startActivity(sendIntent);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
