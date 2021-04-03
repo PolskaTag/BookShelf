@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         if(savedInstanceState != null){
             selectedBook = savedInstanceState.getParcelable(SELECTED_BOOK);
         }
+
+        // our flag for 2 containers
         twoPane = findViewById(R.id.container2) != null;
 
         fragmentManager = getSupportFragmentManager();
