@@ -6,7 +6,13 @@ Book shelf is an app that demonstrates the usage of fragments to form a more com
 of functionality. In this case, our bookshelf app will be responsive to a user's orientation and screen size. This app will display a 
 preset list of books with the cooresponding author. When selected, the book's details should populate the screen.  
 Fragments should be used to display the information. In additon, when the user is in landscape mode or on a larger screen size,
-**both the book list and selected book detail should occupy the screen**. 
+**both the book list and selected book detail should occupy the screen**.
+
+### What's new!
+Now that we have our bookshelf looking nice, we should probably add the ability to search and display books from the interent.
+This assignment will focus on using an API to get book data and transform that data into our bookshelf. We need to create a new
+Activity that provides an EditTextView, Button and maybe another TextView for debugging. Take the input from the user, pass it to 
+the exisiting activities/fragments, and make the magic happen!
 
 ### Requirements:
 1) Book Class
@@ -15,6 +21,11 @@ Fragments should be used to display the information. In additon, when the user i
     - Fragments
     - Activities
 4) Fragments and their core functionality
+5) SearchActivity
+    - Button
+    - EditText
+    - TextView Optional
+6) SearchActivity Theme
 
 
 ### Examples:
