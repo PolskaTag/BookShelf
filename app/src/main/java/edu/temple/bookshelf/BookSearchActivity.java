@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Random;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,7 +45,9 @@ public class BookSearchActivity extends AppCompatActivity {
     ImageView imageView;
     RequestQueue requestQueue;
     Intent sendIntent;
+    JSONArray jsonArray;
 
+    private final String QUERY = "query";
 //    Handler downloadHandler = new Handler(new Handler.Callback() {
 //        @Override
 //        public boolean handleMessage(@NonNull Message msg) {
@@ -86,7 +89,9 @@ public class BookSearchActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-                            JSONObject bookObject = response.getJSONObject(0);
+                            Random random = new Random();
+                            jsonArray = response;
+                            JSONObject bookObject = response.getJSONObject(random.nextInt(response.length()));
                             outputTextView.setText(bookObject.getString("title"));
                             Picasso.get().load(Uri.parse(bookObject.getString("cover_url"))).into(imageView);
 
@@ -112,6 +117,12 @@ public class BookSearchActivity extends AppCompatActivity {
                 requestQueue.add(jsonArrayRequest);
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+//        outState.putString(QUERY, jsonArray.toString());
     }
 
 }
