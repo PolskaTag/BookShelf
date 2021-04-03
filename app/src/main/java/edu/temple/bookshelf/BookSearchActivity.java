@@ -105,6 +105,8 @@ public class BookSearchActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        } else {
+                            outputTextView.setText("No search results found");
                         }
 
                     }
