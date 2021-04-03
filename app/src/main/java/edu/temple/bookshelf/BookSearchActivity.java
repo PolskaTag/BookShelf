@@ -3,29 +3,47 @@ package edu.temple.bookshelf;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import com.squareup.picasso.Picasso;
 
 public class BookSearchActivity extends AppCompatActivity {
 
     EditText urlEditText;
     Button searchButton;
     TextView outputTextView;
+    ImageView imageView;
 
     Handler downloadHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(@NonNull Message msg) {
-            outputTextView.setText((String) msg.obj);
+
+            try {
+                JSONArray bookArray = new JSONArray((String) msg.obj);
+                JSONObject bookObject = bookArray.getJSONObject(0);
+                outputTextView.setText(bookObject.getString("title"));
+                Picasso.get().load(Uri.parse(bookObject.getString("cover_url"))).into(imageView);
+                Log.d("TAG", bookObject.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return false;
         }
     });
@@ -37,6 +55,7 @@ public class BookSearchActivity extends AppCompatActivity {
         urlEditText = findViewById(R.id.urlEditText);
         searchButton = findViewById(R.id.searchButton);
         outputTextView = findViewById(R.id.outputTextView);
+        imageView = findViewById(R.id.imageView);
 
         searchButton.setOnClickListener(new View.OnClickListener(){
 
