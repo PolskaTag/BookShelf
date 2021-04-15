@@ -76,13 +76,18 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         fragmentManager = getSupportFragmentManager();
 
         Fragment fragment;
-        fragment = fragmentManager.findFragmentById(R.id.container1);
+        Fragment fragment2;
+        fragment = fragmentManager.findFragmentById(R.id.contentFrame);
+        fragment2 = fragmentManager.findFragmentById(R.id.controlFrame);
 
         // Display container 1 Only
         if(fragment instanceof BookDetailsFragment){
             fragmentManager.popBackStack();
         } else if (!(fragment instanceof BookListFragment)){
-            fragmentManager.beginTransaction().add(R.id.container1, BookListFragment.newInstance(myBooks)).commit();
+            fragmentManager.beginTransaction()
+                    .add(R.id.contentFrame, BookListFragment.newInstance(myBooks))
+                    .add(R.id.controlFrame, ControlFragment.newInstance("null", "null"))
+                    .commit();
         }
 
         // if not true make another bookdetailsFrag
@@ -98,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         if(twoPane){
             fragmentManager.beginTransaction().replace(R.id.container2, bookDetailsFragment).commit();
         } else if (selectedBook != null) {
-            fragmentManager.beginTransaction().replace(R.id.container1, bookDetailsFragment).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().replace(R.id.contentFrame, bookDetailsFragment).addToBackStack(null).commit();
         }
     }
     @Override
@@ -107,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         if(twoPane){
             bookDetailsFragment.showBook(selectedBook);
         } else {
-            fragmentManager.beginTransaction().replace(R.id.container1, BookDetailsFragment.newInstance(selectedBook)).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().replace(R.id.contentFrame, BookDetailsFragment.newInstance(selectedBook)).addToBackStack(null).commit();
         }
     }
     @Override
