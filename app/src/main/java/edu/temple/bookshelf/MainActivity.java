@@ -1,5 +1,6 @@
 package edu.temple.bookshelf;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -8,17 +9,23 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import edu.temple.audiobookplayer.AudiobookService;
 
-public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedInterface {
+// 635 mb needs a handler 50min
+public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedInterface, ControlFragment.ControlInterface {
 
     FragmentManager fragmentManager;
     boolean twoPane;
@@ -27,26 +34,34 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     Book selectedBook;
     JSONArray bookArray;
     JSONObject bookObject;
-
-//    String[] titles = {
-//            "12 Rules for Life", "The Adventures of Huckleberry Finn",
-//            "Tom Sawyer Abroad", "Republic", "Meditations",
-//            "Mistborn: Shadows of Self", "Why Fish Don't Exist"
-//    };
-//    String[] authors = {
-//            "Jordan Peterson", "Mark Twain", "Mark Twain", "Plato",
-//            "Socrates", "Brandon Sanderson", "Lulu Miller"
-//    };
+    AudiobookService.BookProgress bookProgress;
+    boolean firstPlay = true;
 
     private final String SELECTED_BOOK = "selectedBook";
 
     AudiobookService.MediaControlBinder mediaControlBinder;
     boolean isConnected;
 
+    // Our handler
+    Handler handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+//            if(mediaControlBinder.isPlaying()) {
+                Log.d("log", String.valueOf(msg.what));
+                Message message = Message.obtain(msg);
+                bookProgress = (AudiobookService.BookProgress) msg.obj;
+//                update(bookProgress.getProgress());
+                return true;
+//            }
+//            return false;
+        }
+    });
+
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
             mediaControlBinder = (AudiobookService.MediaControlBinder) binder;
+            mediaControlBinder.setProgressHandler(handler);
             isConnected = true;
         }
 
@@ -55,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             isConnected = false;
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     @Override
     public void bookSelected(int index){
         selectedBook = myBooks.get(index);
+        firstPlay = true;
         if(twoPane){
             bookDetailsFragment.showBook(selectedBook);
         } else {
@@ -158,5 +175,40 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     protected void onDestroy() {
         super.onDestroy();
         unbindService(serviceConnection);
+    }
+
+    @Override
+    public void play() {
+        if(!mediaControlBinder.isPlaying() && selectedBook != null)
+            if(!firstPlay){
+                mediaControlBinder.play(bookProgress.getBookId(), bookProgress.getProgress());
+            } else {
+                mediaControlBinder.play(selectedBook.getId());
+                firstPlay = false;
+            }
+    }
+
+    @Override
+    public void stop() {
+        mediaControlBinder.stop();
+    }
+
+    @Override
+    public void pause() {
+        mediaControlBinder.pause();
+    }
+
+    @Override
+    public void update(int prog) {
+        mediaControlBinder.seekTo(prog);
+    }
+
+    @Override
+    public String nowPlaying() {
+        if(selectedBook != null) {
+            return selectedBook.getTitle();
+        } else {
+            return "";
+        }
     }
 }

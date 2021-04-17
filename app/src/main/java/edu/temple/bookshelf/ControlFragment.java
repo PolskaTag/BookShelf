@@ -1,10 +1,12 @@
 package edu.temple.bookshelf;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.IBinder;
@@ -15,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import java.io.File;
 
 import edu.temple.audiobookplayer.AudiobookService;
 
@@ -33,6 +37,7 @@ public class ControlFragment extends Fragment {
     Button pauseButton;
     TextView nowPlayingTextView;
     SeekBar seekBar;
+    ControlInterface parentActivity;
 
     public ControlFragment() {
         // Required empty public constructor
@@ -44,6 +49,16 @@ public class ControlFragment extends Fragment {
         args.putParcelable(BOOK, book);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof ControlFragment.ControlInterface){
+            parentActivity = (ControlFragment.ControlInterface) context;
+        } else {
+            throw new RuntimeException();
+        }
     }
 
     @Override
@@ -72,6 +87,37 @@ public class ControlFragment extends Fragment {
         nowPlayingTextView = view.findViewById(R.id.nowPlayingTextView);
         seekBar = view.findViewById(R.id.seekBar);
 
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.pause();
+                parentActivity.play();
+                nowPlayingTextView.setText(parentActivity.nowPlaying());
+            }
+        });
+
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.stop();
+            }
+        });
+
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.pause();
+            }
+        });
+
         return view;
+    }
+
+    interface ControlInterface {
+        void play();
+        void stop();
+        void pause();
+        void update(int prog);
+        String nowPlaying();
     }
 }
