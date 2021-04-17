@@ -4,14 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import edu.temple.audiobookplayer.AudiobookService;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedInterface {
 
@@ -35,10 +40,30 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     private final String SELECTED_BOOK = "selectedBook";
 
+    AudiobookService.MediaControlBinder mediaControlBinder;
+    boolean isConnected;
+
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            mediaControlBinder = (AudiobookService.MediaControlBinder) binder;
+            isConnected = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isConnected = false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent serviceIntent = new Intent(MainActivity.this, AudiobookService.class);
+        serviceIntent.putExtra(SELECTED_BOOK, selectedBook);
+        bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
 
         // Make a bundle and grab the data from Intent
         Bundle bundle = getIntent().getExtras();
@@ -53,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                         bookObject.getInt("id"),
                         bookObject.getString("title"),
                         bookObject.getString("author"),
-                        bookObject.getString("cover_url")
+                        bookObject.getString("cover_url"),
+                        bookObject.getInt("duration")
                 ));
             }
 
@@ -86,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         } else if (!(fragment instanceof BookListFragment)){
             fragmentManager.beginTransaction()
                     .add(R.id.contentFrame, BookListFragment.newInstance(myBooks))
-                    .add(R.id.controlFrame, ControlFragment.newInstance("null", "null"))
+                    .add(R.id.controlFrame, ControlFragment.newInstance(selectedBook))
                     .commit();
         }
 
