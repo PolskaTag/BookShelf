@@ -153,4 +153,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         selectedBook = null;
         super.onBackPressed();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serviceConnection);
+    }
 }
